@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Vérification d'Adresse IP</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: black;
+            color: green;
+            font-family: monospace;
+            font-size: 16px;
+        }
+
+        /* Animation pour le fond de la page */
+        @keyframes changement_fond {
+            0% { background-color: #ff9a9e; }
+            25% { background-color: #fad0c4; }
+            50% { background-color: #fbc2eb; }
+            75% { background-color: #f6d365; }
+            100% { background-color: #ff9a9e; }
+        }
+
+        /* Style du fond animé */
+        .matrix {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+            animation: changement_fond 10s infinite; /* Animation de fond en boucle */
+        }
+
+        /* Style pour le formulaire */
+        form {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        /* Animation pour le texte du formulaire */
+        @keyframes changement_couleur_texte {
+            0% { color: red; }
+            25% { color: yellow; }
+            50% { color: lime; }
+            75% { color: cyan; }
+            100% { color: red; }
+        }
+
+        label {
+            font-size: 24px; /* Taille du texte plus grande */
+            display: block;
+            margin-bottom: 10px;
+            animation: changement_couleur_texte 3s infinite; /* Animation pour changer la couleur du texte */
+        }
+
+        input[type="text"] {
+            font-size: 16px;
+            padding: 5px;
+            width: 300px;
+        }
+
+        input[type="submit"] {
+            font-size: 16px;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div class="matrix"></div>
+    <form action="/cgi-bin/verif_ip.cgi" method="get">
+        <label for="ip">Entrez une adresse IP :</label>
+        <input type="text" id="ip" name="ip">
+        <input type="submit" value="Vérifier">
+    </form>
+    <script>
+        // Script pour générer l'effet de matrix
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        document.querySelector('.matrix').appendChild(canvas);
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const columns = canvas.width / 20;
+        const drops = Array(Math.floor(columns)).fill(1);
+
+        function draw() {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = 'green';
+            ctx.font = '20px monospace';
+            drops.forEach((drop, index) => {
+                const text = String.fromCharCode(Math.random() * 128);
+                const x = index * 20;
+                const y = drop * 20;
+                ctx.fillText(text, x, y);
+                if (y > canvas.height && Math.random() > 0.975) {
+                    drops[index] = 0;
+                }
+                drops[index]++;
+            });
+        }
+
+        setInterval(draw, 50);
+
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+    </script>
+</body>
+</html>
